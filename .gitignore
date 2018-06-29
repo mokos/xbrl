@@ -8,7 +8,6 @@
 /tmp/
 
 Makefile
-.gitignore
 
 # rspec failure tracking
 .rspec_status
