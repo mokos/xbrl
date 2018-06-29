@@ -1,11 +1,12 @@
 # Xbrl
 
-Ruby XBRL library.
+XBRLをパースするためのライブラリ。
+XBRL地獄の一助になれば。
 
-## Installation
+## インストール
     $ gem install specific_install
     $ gem install https://github.com/mokos/xbrl
 
-## Usage
+## 使い方
 
 あとでかく
