@@ -1,9 +1,15 @@
-RSpec.describe Xbrl do
+require 'xbrl/parser'
+
+RSpec.describe XBRL do
   it "has a version number" do
-    expect(Xbrl::VERSION).not_to be nil
+    expect(XBRL::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it "read XBRL file and contexts exist" do
+    filepath = File.dirname(__FILE__)+'/test.xbrl' 
+    xbrltext = File.open(filepath).read
+    res = XBRL::Parser.read_xbrl(xbrltext)
+    res.contexts.size
+    expect(res.contexts.size).not_to be 0
   end
 end

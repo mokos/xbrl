@@ -5,7 +5,7 @@ require "xbrl/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "xbrl"
-  spec.version       = Xbrl::VERSION
+  spec.version       = XBRL::VERSION
   spec.authors       = ["mokos"]
   spec.email         = ["mokod308@gmail.com"]
 

@@ -1,6 +1,7 @@
 #!ruby -Ku
 # coding: utf-8
 
+require_relative 'xbrl.rb'
 require_relative 'fact.rb'
 
 require 'nokogiri'
@@ -55,7 +56,7 @@ module XBRL
 
     private
 
-    def self.get_xbrl_file(xbrl_zip_data)
+    def self.search_xbrl_file(xbrl_zip_data)
       Dir.mktmpdir {|dir|
         Dir.chdir(dir) {
 
@@ -104,7 +105,7 @@ module XBRL
       value_kinds = {}
 
       doc.search('context').each do |c|
-        contexts[c['id']] = XbrlContext.new(c)
+        contexts[c['id']] = Context.new(c)
       end
 
       doc.search('unit').each do |u|
@@ -132,8 +133,8 @@ module XBRL
               raise 'no context'
             end
             name = a['name'] #.gsub(/^tse-ed-t:/, '')
-            value = XbrlValue.make(a, value_kind)
-            facts << XbrlFact.new(context, name, value)
+            value = Value.make(a, value_kind)
+            facts << Fact.new(context, name, value)
           end
         end
       else # .xbrl file
@@ -142,8 +143,8 @@ module XBRL
             context = contexts[context_name]
             name = tag.name
             value_kind = value_kinds[tag['unitRef']]
-            value = XbrlValue.make(tag, value_kind)
-            facts << XbrlFact.new(context, name, value)
+            value = Value.make(tag, value_kind)
+            facts << Fact.new(context, name, value)
           end
         end
       end
