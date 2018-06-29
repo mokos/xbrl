@@ -1,7 +1,6 @@
-# Xbrl
+# XBRL
 
-XBRLをパースするためのライブラリ。
-XBRL地獄の一助になれば。
+XBRL地獄をパースするためのライブラリ。
 
 ## インストール
     $ gem install specific_install
