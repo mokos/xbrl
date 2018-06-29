@@ -8,4 +8,8 @@ XBRL地獄をパースするためのライブラリ。
 
 ## 使い方
 
-あとでかく
+require 'xbrl/parser'
+
+x = XBRL::Parser::get_sbrl(xbrl_text)
+puts s.facts
+puts s.contexts
