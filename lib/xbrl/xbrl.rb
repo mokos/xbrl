@@ -6,6 +6,8 @@ require 'date'
 require 'open-uri'
 require 'kconv'
 
+require_relative 'parser'
+
 module XBRL
 
   # 連結と単体データがあるときにどちらを優先するか
@@ -57,8 +59,8 @@ module XBRL
       nil
     end
 
-    def get_fact(fact_name)
-      get_facts(fact_name).first
+    def get_fact(*args)
+      get_facts(*args).first
     end
 
     def get_facts(fact_name, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: ConsolidationPriority::PriorCons)

@@ -10,6 +10,7 @@ XBRL地獄をパースするためのライブラリ。
 
 UfoCatcherから取ってきたXBRLファイル(ixbrl.htm)を読み込みます。
 
+
 ```ruby
 require 'open-uri'
 require 'xbrl/xbrl'

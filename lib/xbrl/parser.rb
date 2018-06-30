@@ -119,10 +119,9 @@ module XBRL
           doc.search(value_kind).each do |a|
             context = contexts[a['contextRef']]
             unless context
-              puts a['contextRef']
               raise 'no context'
             end
-            name = a['name'] #.gsub(/^tse-ed-t:/, '')
+            name = a['name'].split(':').last
             value = Value.make(a, value_kind)
             facts << Fact.new(context, name, value)
           end
@@ -131,15 +130,13 @@ module XBRL
         doc.search('*').each do |tag|
           if context_name = tag['contextRef']
             context = contexts[context_name]
-            name = tag.name
+            name = tag.name.split(':').last
             value_kind = value_kinds[tag['unitRef']]
             value = Value.make(tag, value_kind)
             facts << Fact.new(context, name, value)
           end
         end
       end
-
-      File.open(File.dirname(__FILE__)+'/tmp.xbrl', 'w+').puts doc
 
       XBRL.new(facts)
     end
