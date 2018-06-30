@@ -50,3 +50,15 @@ puts company_name # トヨタ自動車株式会社
 sales = x.get_fact('NetSalesUS', context_name: /Current/).value
 puts sales # 29379510000000
 ```
+
+EDINET
+```ruby
+url = 'http://resource.ufocatch.com/data/edinet/ED2018062500789'
+zip = open(url).read
+x = XBRL::XBRL.from_zip(zip)
+
+puts x.facts
+
+sales = x.get_fact(/RevenuesUS/, context_name: /Current/).value
+expect(sales).to eq 29379510000000
+```
