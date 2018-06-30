@@ -74,4 +74,10 @@ RSpec.describe XBRL do
     expect{ x[/RevenuesUS/] }.to raise_error
   end
 
+  it 'read labelname' do
+    url = 'http://resource.ufocatch.com/xbrl/edinet/ED2018062500789/PublicDoc/jpcrp030000-asr-001_E02144-000_2018-03-31_01_2018-06-25.xsd'
+    doc = open(url).read
+    labelnames = XBRL::Schema.read_label_from_xsd(doc)
+    expect(labelnames.size).not_to be 0
+  end
 end

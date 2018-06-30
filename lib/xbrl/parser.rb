@@ -1,8 +1,9 @@
 #!ruby -Ku
 # coding: utf-8
 
-require_relative 'xbrl.rb'
-require_relative 'fact.rb'
+require_relative 'xbrl'
+require_relative 'fact'
+require_relative 'schema'
 
 require 'nokogiri'
 require 'date'
@@ -13,7 +14,13 @@ module XBRL
 
   class Parser
     def self.read_xbrl_zip(xbrl_zip)
-      read_xbrl(search_xbrl_file(xbrl_zip))
+      xbrls, xsds = search_xbrl_files(xbrl_zip)
+      read_xbrl(xbrls.first)
+    end
+
+    def self.read_labelname(xbrl_zip)
+      xbrls, xsds = search_xbrl_files(xbrl_zip)
+      Schema.read_label_from_xsd(xsds.first)
     end
 
     def self.read_xbrl_zip_url(xbrl_zip_url)
@@ -29,7 +36,6 @@ module XBRL
     end
 
     def self.read_xbrl(xbrl_text)
-      # 不要な文字列を削除しread_xbrl_docで読み込む
       xbrl_text = xbrl_text.toutf8
 
       doc = Nokogiri::XML.parse(xbrl_text)
@@ -46,7 +52,10 @@ module XBRL
 
     private
 
-    def self.search_xbrl_file(xbrl_zip_data)
+    def self.search_xbrl_files(xbrl_zip_data)
+      xbrls = []
+      xsds = []
+
       Dir.mktmpdir {|dir|
         Dir.chdir(dir) {
 
@@ -64,23 +73,36 @@ module XBRL
             './**/*.xbrl'
           ].each do |pattern|
             Dir.glob(pattern).each do |f|
-              return File.open(f).read
+              xbrls << File.open(f).read
+            end
+          end
+
+          [
+            './**/PublicDoc/*.xsd',
+          ].each do |pattern|
+            Dir.glob(pattern).each do |f|
+              xsds << File.open(f).read
             end
           end
 
           # 複数のixbrl.htmを一つのHTMLファイルにする
           if (w=Dir.glob('./**/*ixbrl.htm')).size>0
-            res = w.map do |f|
-              doc = Nokogiri::HTML.parse(File.open(f, 'r').read)
-              doc.at('body').inner_html
-            end.join
-            return "<html><body>#{res}</body></html>"
+            res =
+              w.map do |f|
+                doc = Nokogiri::HTML.parse(File.open(f, 'r').read)
+                if doc.at('body')
+                  doc.at('body').inner_html
+                else
+                  nil
+                end
+              end.compact.join
+            xbrls << "<html><body>#{res}</body></html>"
           end
 
         }
       }
 
-      nil
+      [xbrls, xsds]
     end
 
     def self.read_xbrl_doc(nokogiri_doc)

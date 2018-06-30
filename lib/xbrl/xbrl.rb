@@ -30,8 +30,13 @@ module XBRL
 
   class XBRL
     attr_reader :facts
-    def initialize(facts)
+    def initialize(facts, labelname_hash: nil)
       @facts = facts
+      @labelname = nil
+    end
+
+    def set_labelname(hs)
+      @labelname = hs
     end
 
     def self.from_zip(zip_data)
