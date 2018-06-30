@@ -57,21 +57,18 @@ module XBRL
 
           # EDINET
           # AuditDocは監査報告書なので不要
-          Dir.glob('./**/PublicDoc/*.xbrl').each do |f|
-            return File.open(f).read
+          [
+            './**/PublicDoc/*.xbrl',
+            './**/Summary/*.xbrl', 
+            './**/Summary/*ixbrl.htm',
+            './**/*.xbrl'
+          ].each do |pattern|
+            Dir.glob(pattern).each do |f|
+              return File.open(f).read
+            end
           end
 
-          Dir.glob('./**/Summary/*.xbrl').each do |f|
-            return File.open(f).read
-          end
-          Dir.glob('./**/Summary/*ixbrl.htm').each do |f|
-            return File.open(f).read
-          end
-
-          Dir.glob('./**/*.xbrl').each do |f|
-            return File.open(f).read
-          end
-
+          # 複数のixbrl.htmを一つのHTMLファイルにする
           if (w=Dir.glob('./**/*ixbrl.htm')).size>0
             res = w.map do |f|
               doc = Nokogiri::HTML.parse(File.open(f, 'r').read)
