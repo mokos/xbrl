@@ -116,13 +116,13 @@ module XBRL
 
       if doc.at('nonFraction') # ixbrl.html file
         %w(fraction nonFraction nonNumeric).each do |value_kind|
-          doc.search(value_kind).each do |a|
-            context = contexts[a['contextRef']]
+          doc.search(value_kind).each do |tag|
+            context = contexts[tag['contextRef']]
             unless context
               raise 'no context'
             end
-            name = a['name'].split(':').last
-            value = Value.make(a, value_kind)
+            name = tag['name'].split(':').last
+            value = Value.make(tag, value_kind)
             facts << Fact.new(context, name, value)
           end
         end
