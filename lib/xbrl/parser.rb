@@ -98,23 +98,7 @@ module XBRL
         contexts[c['id']] = Context.new(c)
       end
 
-      doc.search('unit').each do |u|
-        value_kinds[u['id']] = 
-          if u['divide']
-            'Fraction'
-          else
-            case u['measure']
-            when 'JPY', 'NumberOfCompanies', 'Shares', 'Pure'
-              'nonFraction'
-            when nil
-              'nonNumeric'
-            else
-              raise 'no unit'
-            end
-          end
-      end
-
-      if doc.at('nonFraction') # ixbrl.html file
+      if doc.at('nonFraction') # ixbrl.htm file
         %w(fraction nonFraction nonNumeric).each do |value_kind|
           doc.search(value_kind).each do |tag|
             context = contexts[tag['contextRef']]
@@ -127,6 +111,25 @@ module XBRL
           end
         end
       else # .xbrl file
+
+        doc.search('unit').each do |u|
+          measure = u.at('measure')
+          value_kinds[u['id']] = 
+            if u.at('divide')
+              'Fraction'
+            elsif measure.nil?
+              'nonNumeric'
+            else
+              case measure.text.split(':').last.downcase
+              when 'jpy', 'numberofcompanies', 'shares', 'pure', 'nonnegativeinteger'
+                'nonFraction'
+              else
+                STDERR.puts 'no unit'
+                'nonNumeric'
+              end
+            end
+        end
+
         doc.search('*').each do |tag|
           if context_name = tag['contextRef']
             context = contexts[context_name]
