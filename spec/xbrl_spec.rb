@@ -17,7 +17,7 @@ RSpec.describe XBRL do
     company_name = x.get_fact('CompanyName').value
     expect(company_name).to eq 'トヨタ自動車株式会社'
 
-    sales = x.get_fact('NetSalesUS', context_name: /Current/).value
+    sales = x['NetSalesUS', context_name: /Current/]
     expect(sales).to eq 29379510000000
   end
 
@@ -26,10 +26,10 @@ RSpec.describe XBRL do
     zip = open(url).read
     x = XBRL::XBRL.from_zip(zip)
 
-    company_name = x.get_fact('CompanyName').value
+    company_name = x['CompanyName']
     expect(company_name).to eq 'トヨタ自動車株式会社'
 
-    sales = x.get_fact('NetSalesUS', context_name: /Current/).value
+    sales = x['NetSalesUS', context_name: /Current/]
     expect(sales).to eq 29379510000000
   end
 
@@ -41,7 +41,7 @@ RSpec.describe XBRL do
     company_name = x.get_fact('CompanyName').value
     expect(company_name).to eq 'トヨタ自動車株式会社'
 
-    sales = x.get_fact('NetSalesUS', context_name: /Current/).value
+    sales = x['NetSalesUS', context_name: /Current/]
     expect(sales).to eq 6215130000000
   end
 
@@ -50,10 +50,10 @@ RSpec.describe XBRL do
     zip = open(url).read
     x = XBRL::XBRL.from_zip(zip)
 
-    company_name = x.get_fact('CompanyName').value
+    company_name = x['CompanyName']
     expect(company_name).to eq 'トヨタ自動車株式会社'
 
-    sales = x.get_fact('NetSalesUS', context_name: /Current/).value
+    sales = x['NetSalesUS', context_name: /Current/]
     expect(sales).to eq 6215130000000
   end
 
@@ -62,8 +62,16 @@ RSpec.describe XBRL do
     zip = open(url).read
     x = XBRL::XBRL.from_zip(zip)
 
-    sales = x.get_fact(/RevenuesUS/, context_name: /Current/).value
+    sales = x[/RevenuesUS/, context_name: /Current/]
     expect(sales).to eq 29379510000000
+  end
+
+  it 'raise if multi facts' do
+    url = 'http://resource.ufocatch.com/data/edinet/ED2018062500789'
+    zip = open(url).read
+    x = XBRL::XBRL.from_zip(zip)
+
+    expect{ x[/RevenuesUS/] }.to raise_error
   end
 
 end
