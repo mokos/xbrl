@@ -121,6 +121,14 @@ module XBRL
     def to_s
       @facts.to_s
     end
+
+    def [](*args)
+      facts = get_facts(*args)
+      return nil if facts.size==0
+      raise 'many facts.' if facts.size>1
+
+      facts.first.value
+    end
   end
 
 end
