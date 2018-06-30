@@ -7,7 +7,5 @@
 /spec/reports/
 /tmp/
 
-Makefile
-
 # rspec failure tracking
 .rspec_status
