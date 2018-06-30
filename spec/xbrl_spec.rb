@@ -62,8 +62,6 @@ RSpec.describe XBRL do
     zip = open(url).read
     x = XBRL::XBRL.from_zip(zip)
 
-    puts x.facts
-
     sales = x.get_fact(/RevenuesUS/, context_name: /Current/).value
     expect(sales).to eq 29379510000000
   end
