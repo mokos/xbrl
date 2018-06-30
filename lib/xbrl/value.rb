@@ -14,7 +14,8 @@ module XBRL
       when 'nonFraction'
         NonFraction.new(tag)
       when 'fraction', 'Fraction'
-        raise kind
+        # TODO Fraction class
+        NonFraction.new(tag)
       when 'nonNumeric', nil
         NonNumeric.new(tag)
       else
