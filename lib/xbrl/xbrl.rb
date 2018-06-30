@@ -61,7 +61,11 @@ module XBRL
     end
 
     def get_fact(*args)
-      get_facts(*args).first
+      fs = get_facts(*args)
+      return nil if fs.size==0
+      raise 'many facts.' if fs.size>1
+
+      fs.first
     end
 
     def get_facts(fact_name, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: ConsolidationPriority::PriorCons)
@@ -123,11 +127,13 @@ module XBRL
     end
 
     def [](*args)
-      facts = get_facts(*args)
-      return nil if facts.size==0
-      raise 'many facts.' if facts.size>1
+      fact = get_fact(*args)
 
-      facts.first.value
+      if fact
+        fact.value
+      else
+        nil
+      end
     end
   end
 
