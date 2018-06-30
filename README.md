@@ -8,8 +8,13 @@ XBRL地獄をパースするためのライブラリ。
 
 ## 使い方
 
-require 'xbrl/parser'
+UfoCatcherから取ってきたXBRLファイル(ixbrl.htm)を読み込みます。
 
-x = XBRL::Parser::get_sbrl(xbrl_text)
-puts s.facts
-puts s.contexts
+```ruby
+require 'open-uri'
+url = 'http://resource.ufocatch.com/xbrl/tdnet/TD2018050900106/2018/5/9/081220180312488206/XBRLData/Summary/tse-acedussm-72030-20180312488206-ixbrl.htm'
+doc = open(url).read
+x = XBRL::XBRL.from_xbrl(doc)
+puts x.contexts
+puts x.facts
+```

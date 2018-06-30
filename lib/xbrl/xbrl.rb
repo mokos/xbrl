@@ -32,6 +32,14 @@ module XBRL
       @facts = facts
     end
 
+    def self.from_zip(zip_data)
+      Parser.read_xbrl_zip(zip_data)
+    end
+
+    def self.from_xbrl(xbrl_text)
+      Parser.read_xbrl(xbrl_text)
+    end
+
     def contexts
       @facts.map {|f|
         f.context

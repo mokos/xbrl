@@ -13,7 +13,7 @@ module XBRL
 
   class Parser
     def self.read_xbrl_zip(xbrl_zip)
-      read_xbrl(get_xbrl_file(xbrl_zip))
+      read_xbrl(search_xbrl_file(xbrl_zip))
     end
 
     def self.read_xbrl_zip_url(xbrl_zip_url)
@@ -26,16 +26,6 @@ module XBRL
           html.gsub(/<\/?html>/, '')
         end.join('')
       )
-    end
-
-    def self.delete_needless_str!(xbrl_text)
-      needless_tags = %w(style width height)
-      needless_tags.each do |tag|
-        xbrl_text.scan(/(\s+#{tag}="[^"]*")/m).each do |m|
-          xbrl_text.gsub!(m.first.to_s, '')
-        end
-      end
-      xbrl_text.gsub!(/<\/?span>/, '')
     end
 
     def self.read_xbrl(xbrl_text)
