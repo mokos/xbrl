@@ -43,9 +43,10 @@ module XBRL
     end
 
     def contexts
-      @facts.map {|f|
-        f.context
-      }.sort.uniq
+      @contexts ||= 
+        @facts.map {|f|
+          f.context
+        }.sort.uniq
     end
 
     def get_context(context_name)
