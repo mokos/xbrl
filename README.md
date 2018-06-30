@@ -60,5 +60,5 @@ x = XBRL::XBRL.from_zip(zip)
 puts x.facts
 
 sales = x.get_fact(/RevenuesUS/, context_name: /Current/).value
-pust sales # 29379510000000
+puts sales # 29379510000000
 ```
