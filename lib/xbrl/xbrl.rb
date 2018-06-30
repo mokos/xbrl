@@ -43,6 +43,10 @@ module XBRL
       Parser.read_xbrl_zip(zip_data)
     end
 
+    def self.from_zip_with_labelname(zip_data)
+      Parser.read_xbrl_zip(zip_data, labelname: true)
+    end
+
     def self.from_xbrl(xbrl_text)
       Parser.read_xbrl(xbrl_text)
     end
@@ -73,7 +77,7 @@ module XBRL
       fs.first
     end
 
-    def get_facts(fact_name, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: ConsolidationPriority::PriorCons)
+    def get_facts(fact_name=nil, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: ConsolidationPriority::PriorCons, labelname: nil)
       res = @facts.select {|fact|
         if fact_name
           case fact.name
@@ -87,6 +91,20 @@ module XBRL
           case fact.context.name
           when context_name
           else
+            next
+          end
+        end
+
+        if labelname
+          names = @labelname[fact.name]
+          if not names.any? {|name|
+            case name
+            when labelname
+              true
+            else
+              false
+            end
+          }
             next
           end
         end

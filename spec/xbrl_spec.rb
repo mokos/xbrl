@@ -75,9 +75,14 @@ RSpec.describe XBRL do
   end
 
   it 'read labelname' do
-    url = 'http://resource.ufocatch.com/xbrl/edinet/ED2018062500789/PublicDoc/jpcrp030000-asr-001_E02144-000_2018-03-31_01_2018-06-25.xsd'
-    doc = open(url).read
-    labelnames = XBRL::Schema.read_label_from_xsd(doc)
-    expect(labelnames.size).not_to be 0
+    url = 'http://resource.ufocatch.com/data/tdnet/TD2018050900106'
+    zip = open(url).read
+    x = XBRL::XBRL.from_zip_with_labelname(zip)
+
+    company_name = x['CompanyName']
+    expect(company_name).to eq 'トヨタ自動車株式会社'
+
+    sales = x[labelname: '売上高', context_name: /Current/]
+    expect(sales).to eq 29379510000000
   end
 end

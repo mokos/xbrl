@@ -13,9 +13,14 @@ require 'kconv'
 module XBRL
 
   class Parser
-    def self.read_xbrl_zip(xbrl_zip)
+    def self.read_xbrl_zip(xbrl_zip, labelname: false)
       xbrls, xsds = search_xbrl_files(xbrl_zip)
-      read_xbrl(xbrls.first)
+      x = read_xbrl(xbrls.first)
+      if labelname
+        l = Schema.read_label_from_xsd(xsds.first)
+        x.set_labelname(l)
+      end
+      x
     end
 
     def self.read_labelname(xbrl_zip)
@@ -79,6 +84,7 @@ module XBRL
 
           [
             './**/PublicDoc/*.xsd',
+            './**/Summary/*.xsd', 
           ].each do |pattern|
             Dir.glob(pattern).each do |f|
               xsds << File.open(f).read

@@ -12,7 +12,8 @@ module XBRL
       doc.remove_namespaces!
 
       doc.search('linkbaseRef').each do |ref|
-        if ref['role'].match /labelLinkbaseRef$/
+        href = ref['href']
+        if ref['role'].match /labelLinkbaseRef$/ and not href.match(/en.xml/)
           return read_label_linkbase_ref(ref['href'])
         end
       end
