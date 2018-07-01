@@ -17,7 +17,8 @@ RSpec.describe XBRL do
     company_name = x.get_fact('CompanyName').value
     expect(company_name).to eq 'トヨタ自動車株式会社'
 
-    sales = x['NetSalesUS', context_name: /Current/]
+    current_result_x = x.select_current.select_result
+    sales = current_result_x['NetSalesUS']
     expect(sales).to eq 29379510000000
   end
 
@@ -71,7 +72,7 @@ RSpec.describe XBRL do
     zip = open(url).read
     x = XBRL::XBRL.from_zip(zip)
 
-    expect{ x[/RevenuesUS/] }.to raise_error
+    expect{ x[/RevenuesUS/] }.to raise_error RuntimeError
   end
 
   it 'read labelname' do

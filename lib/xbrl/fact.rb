@@ -1,4 +1,5 @@
-require_relative 'value.rb'
+require_relative 'context'
+require_relative 'value'
 
 module XBRL
 

@@ -11,28 +11,16 @@ require_relative 'parser'
 module XBRL
 
   # 連結と単体データがあるときにどちらを優先するか
-  module ConsolidationPriority
-    PriorCons = 0 #連結優先
-    PriorNonCons = 1 #個別優先
-    Cons = 2 #連結指定
-    NonCons = 3 #個別指定
-  end
-
-  module CurrentPriority
-    Current = 0
-    Prior = 1
-  end
-
-  module ResulstPriority
-    Result = 0
-    Forecast = 1
-  end
+  PriorCons = 0 #連結優先
+  PriorNonCons = 1 #個別優先
+  Cons = 2 #連結指定
+  NonCons = 3 #個別指定
 
   class XBRL
     attr_reader :facts
-    def initialize(facts, labelname_hash: nil)
+    def initialize(facts, labelname: nil)
       @facts = facts
-      @labelname = nil
+      @labelname = labelname
     end
 
     def set_labelname(hs)
@@ -77,72 +65,106 @@ module XBRL
       fs.first
     end
 
-    def get_facts(fact_name=nil, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: ConsolidationPriority::PriorCons, labelname: nil)
-      res = @facts.select {|fact|
-        if fact_name
-          case fact.name
-          when fact_name
-          else
-            next
-          end
-        end
+    def select_current()
+      filter(is_current: true)
+    end
 
-        if context_name
-          case fact.context.name
-          when context_name
-          else
-            next
-          end
-        end
+    def select_result()
+      filter(is_result: true)
+    end
 
-        if labelname
-          names = @labelname[fact.name]
-          if not names.any? {|name|
-            case name
-            when labelname
-              true
+    def select_forcast()
+      filter(is_result: false)
+    end
+
+    def filter(fact_name=nil, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: PriorCons, is_current: nil, is_result: nil, labelname: nil)
+
+      fs =
+        @facts.select {|fact|
+          if fact_name
+            case fact.name
+            when fact_name
             else
-              false
+              next
             end
-          }
-            next
           end
-        end
 
-        if context
-          next unless fact.context == context
-        end
+          if context_name
+            case fact.context.name
+            when context_name
+            else
+              next
+            end
+          end
 
-        if record_date
-          next unless record_date == fact.context.record_date
-        end
+          if labelname
+            names = @labelname[fact.name]
+            if not names.any? {|name|
+              case name
+              when labelname
+                true
+              else
+                false
+              end
+            }
+              next
+            end
+          end
 
-        if start_date
-          next unless start_date == fact.context.start_date
-        end
+          if context
+            next unless fact.context == context
+          end
+
+          if record_date
+            next unless record_date == fact.context.record_date
+          end
+
+          if start_date
+            next unless start_date == fact.context.start_date
+          end
+
+          unless is_current.nil?
+            if is_current
+              next unless fact.context.is_current?
+            else
+              next unless not fact.context.is_current?
+            end
+          end
+
+          unless is_result.nil?
+            if is_result
+              next unless fact.context.is_result?
+            else
+              next unless not fact.context.is_result?
+            end
+          end
+
+          case consolidation_priority
+          when Cons
+            next unless fact.context.consolidated?
+          when NonCons
+            next if fact.context.consolidated?
+          end
+
+          next unless fact.value
+
+          true
+        }
 
         case consolidation_priority
-        when ConsolidationPriority::Cons
-          next unless fact.context.consolidated?
-        when ConsolidationPriority::NonCons
-          next if fact.context.consolidated?
+        when PriorCons
+          fs2 = fs.select {|fact| fact.context.is_consolidated? }
+          fs = fs2 if fs2.size>0
+        when PriorNonCons
+          fs2 = fs.select {|fact| not fact.context.is_consolidated? }
+          fs = fs2 if fs2.size>0
         end
 
-        next unless fact.value
+      XBRL.new(fs, labelname: @labelname)
+    end
 
-        true
-      }
-
-      case consolidation_priority
-      when ConsolidationPriority::PriorCons
-        res2 = res.select {|fact| fact.context.is_consolidated? }
-        res = res2 if res2.size>0
-      when ConsolidationPriority::PriorNonCons
-        res2 = res.select {|fact| not fact.context.is_consolidated? }
-        res = res2 if res2.size>0
-      end
-
-      res
+    def get_facts(*args)
+      self.filter(*args).facts
     end
 
     def to_s
