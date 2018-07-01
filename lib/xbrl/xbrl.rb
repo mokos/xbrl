@@ -65,16 +65,20 @@ module XBRL
       fs.first
     end
 
-    def select_current()
+    def select_current
       filter(is_current: true)
     end
 
-    def select_result()
+    def select_result
       filter(is_result: true)
     end
 
-    def select_forcast()
+    def select_forcast
       filter(is_result: false)
+    end
+
+    def select_prior_consolidated
+      filter
     end
 
     def filter(fact_name=nil, context: nil, context_name: nil, start_date: nil, record_date: nil, consolidation_priority: PriorCons, is_current: nil, is_result: nil, labelname: nil)
