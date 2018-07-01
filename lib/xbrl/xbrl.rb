@@ -17,7 +17,7 @@ module XBRL
   NonCons = 3 #個別指定
 
   class XBRL
-    attr_reader :facts
+    attr_reader :facts, :labelname
     def initialize(facts, labelname: nil)
       @facts = facts
       @labelname = labelname

@@ -9,6 +9,7 @@ require 'nokogiri'
 require 'date'
 require 'open-uri'
 require 'kconv'
+require 'tmpdir'
 
 module XBRL
 
