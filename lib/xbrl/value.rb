@@ -59,7 +59,12 @@ module XBRL
       if v=='' or doc['nil']
         @value = nil
       else
-        v = BigDecimal(v)
+        case v
+        when /(\d+)円(\d+)銭/
+          v = BigDecimal("#{$1}.%02d" % $2.to_i)
+        else
+          v = BigDecimal(v)
+        end
 
         if w=doc['scale']
           v *= 10**w.to_i
