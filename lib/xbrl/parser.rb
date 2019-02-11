@@ -76,6 +76,7 @@ module XBRL
             './**/PublicDoc/*.xbrl',
             './**/Summary/*.xbrl', 
             './**/Summary/*ixbrl.htm',
+            './**/*ixbrl.htm',
             './**/*.xbrl'
           ].each do |pattern|
             Dir.glob(pattern).each do |f|
