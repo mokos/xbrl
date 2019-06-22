@@ -1,2 +1,2 @@
-require "xbrl/version"
-require "xbrl/xbrl"
+require_relative 'xbrl/version'
+require_relative 'xbrl/xbrl'
