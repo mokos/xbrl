@@ -1,10 +1,5 @@
-#!ruby -Ku
-# coding: utf-8
-
 require 'nokogiri'
 require 'date'
-require 'open-uri'
-require 'kconv'
 
 require_relative 'parser'
 

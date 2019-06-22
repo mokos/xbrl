@@ -62,11 +62,16 @@ module XBRL
       xbrls = []
       xsds = []
 
+      case xbrl_zip_data
+      when File
+        xbrl_zip_data = xbrl_zip_data.read
+      end
+
       Dir.mktmpdir {|dir|
         Dir.chdir(dir) {
 
           File.open('tmp.zip', 'wb+') {|f|
-            f.puts xbrl_zip_data
+            f.write xbrl_zip_data
           }
           `unzip tmp.zip`
 
@@ -110,6 +115,7 @@ module XBRL
         }
       }
 
+      puts [xbrls]
       [xbrls, xsds]
     end
 
