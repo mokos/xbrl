@@ -115,7 +115,6 @@ module XBRL
         }
       }
 
-      puts [xbrls]
       [xbrls, xsds]
     end
 

@@ -12,9 +12,14 @@ module XBRL
   NonCons = 3 #個別指定
 
   class XBRL
-    attr_reader :facts, :labelname
+    attr_reader :facts, :contexts, :labelname
     def initialize(facts, labelname: nil)
       @facts = facts
+      @contexts =
+        @facts.map {|f|
+          f.context
+        }.sort.uniq
+
       @labelname = labelname
     end
 
@@ -32,13 +37,6 @@ module XBRL
 
     def self.from_xbrl(xbrl_text)
       Parser.read_xbrl(xbrl_text)
-    end
-
-    def contexts
-      @contexts ||= 
-        @facts.map {|f|
-          f.context
-        }.sort.uniq
     end
 
     def get_context(context_name)
