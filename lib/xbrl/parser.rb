@@ -22,7 +22,7 @@ module XBRL
         return nil
       end
 
-      x = read_xbrl(xxbrl_text)
+      x = read_xbrl(xbrl_text)
       if labelname
         l = Schema.read_label_from_xsd(xsds.first)
         x.set_labelname(l)
