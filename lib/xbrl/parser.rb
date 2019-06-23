@@ -18,9 +18,7 @@ module XBRL
       xbrls, xsds = search_xbrl_files(xbrl_zip)
       xbrl_text = xbrls.first
 
-      unless xbrl_text
-        return nil
-      end
+      return nil unless xbrl_text
 
       x = read_xbrl(xbrl_text)
       if labelname
@@ -41,6 +39,9 @@ module XBRL
           html.gsub(/<\/?html>/, '')
         end.join('')
       )
+    end
+
+    def self.read_xbrls(xbrls)
     end
 
     def self.read_xbrl(xbrl_text)
@@ -79,6 +80,7 @@ module XBRL
 
           # EDINET
           # AuditDocは監査報告書なので不要
+          `rm -r */AuditDoc`
           [
             './**/PublicDoc/*.xbrl',
             './**/Summary/*.xbrl', 
@@ -87,6 +89,7 @@ module XBRL
             './**/*.xbrl'
           ].each do |pattern|
             Dir.glob(pattern).each do |f|
+              puts f
               xbrls << File.open(f).read
             end
           end
