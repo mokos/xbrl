@@ -78,7 +78,7 @@ RSpec.describe XBRL do
   it 'read labelname' do
     url = 'http://resource.ufocatch.com/data/tdnet/TD2018050900106'
     zip = open(url).read
-    x = XBRL::XBRL.from_zip_with_labelname(zip)
+    x = XBRL::XBRL.from_zip(zip, labelname: true)
 
     company_name = x['CompanyName']
     expect(company_name).to eq 'トヨタ自動車株式会社'

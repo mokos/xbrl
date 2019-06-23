@@ -27,12 +27,8 @@ module XBRL
       @labelname = hs
     end
 
-    def self.from_zip(zip_data)
-      Parser.read_xbrl_zip(zip_data)
-    end
-
-    def self.from_zip_with_labelname(zip_data)
-      Parser.read_xbrl_zip(zip_data, labelname: true)
+    def self.from_zip(*args)
+      Parser.read_xbrl_zip(*args)
     end
 
     def self.from_xbrl(xbrl_text)

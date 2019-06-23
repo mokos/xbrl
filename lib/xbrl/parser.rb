@@ -14,9 +14,12 @@ require 'tmpdir'
 module XBRL
 
   class Parser
-    def self.read_xbrl_zip(xbrl_zip, labelname: false)
+    def self.read_xbrl_zip(xbrl_zip, labelname: false, xbrl_output_path: nil)
       xbrls, xsds = search_xbrl_files(xbrl_zip)
       xbrl_text = xbrls.first
+      if (xbrl_output_path)
+        File.open(xbrl_output_path, 'w+').write xbrl_text
+      end
 
       return nil unless xbrl_text
 
@@ -80,7 +83,7 @@ module XBRL
 
           # EDINET
           # AuditDocは監査報告書なので不要
-          `rm -r */AuditDoc`
+          `rm -rf */AuditDoc`
           [
             './**/PublicDoc/*.xbrl',
             './**/Summary/*.xbrl', 
