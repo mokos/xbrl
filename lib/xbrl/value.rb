@@ -38,12 +38,14 @@ module XBRL
           @value = 'true'
         when /booleanfalse/
           @value = 'false'
-        when /dateerayearmonthdayj/
+        when /:dateerayearmonthdayjp$/
+          d = doc.text.gsub(/<[^>]+>/, '')
+          @value = jpdate2date d
+        when /:dateyearmonthdaycjk$/
           d = doc.text.gsub(/<[^>]+>/, '')
           @value = jpdate2date d
         else
-          raise
-          # do nothing
+          raise "format error : #{w.text}"
         end
       else
         @value = doc.text.strip
@@ -52,7 +54,7 @@ module XBRL
     
     def jpdate2date jpdate
       jpdate.tr!('０-９', '0-9')
-      unless jpdate.match(/^(..)((\d+)|元)年(\d+)月(\d+)日$/)
+      unless jpdate.match(/^(昭和|平成|令和)?((\d+)|元)年(\d+)月(\d+)日$/)
         raise "jp date parse error: #{jpdate}"
       end
 
@@ -68,8 +70,9 @@ module XBRL
         y += 1988
       when '令和'
         y += 2018
+      when nil
       else
-        raise 'gengou must heisei, reiwa'
+        raise 'gengou error'
       end
 
       Date.new(y, m, d)
