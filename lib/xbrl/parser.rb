@@ -16,7 +16,13 @@ module XBRL
   class Parser
     def self.read_xbrl_zip(xbrl_zip, labelname: false)
       xbrls, xsds = search_xbrl_files(xbrl_zip)
-      x = read_xbrl(xbrls.first)
+      xbrl_text = xbrls.first
+
+      unless xbrl_text
+        return nil
+      end
+
+      x = read_xbrl(xxbrl_text)
       if labelname
         l = Schema.read_label_from_xsd(xsds.first)
         x.set_labelname(l)
@@ -27,10 +33,6 @@ module XBRL
     def self.read_labelname(xbrl_zip)
       xbrls, xsds = search_xbrl_files(xbrl_zip)
       Schema.read_label_from_xsd(xsds.first)
-    end
-
-    def self.read_xbrl_zip_url(xbrl_zip_url)
-      read_xbrl_zip(open(xbrl_zip_url).read)
     end
 
     def self.read_xbrl_htmls(xbrl_htmls)
