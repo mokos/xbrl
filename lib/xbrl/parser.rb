@@ -92,7 +92,6 @@ module XBRL
             './**/*.xbrl'
           ].each do |pattern|
             Dir.glob(pattern).each do |f|
-              puts f
               xbrls << File.open(f).read
             end
           end

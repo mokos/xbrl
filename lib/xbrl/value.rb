@@ -1,6 +1,3 @@
-#!ruby -Ku
-# coding: utf-8
-
 require 'bigdecimal'
 
 module XBRL
@@ -41,13 +38,43 @@ module XBRL
           @value = 'true'
         when /booleanfalse/
           @value = 'false'
+        when /dateerayearmonthdayj/
+          d = doc.text.gsub(/<[^>]+>/, '')
+          @value = jpdate2date d
         else
+          raise
           # do nothing
         end
       else
         @value = doc.text.strip
       end
     end
+    
+    def jpdate2date jpdate
+      jpdate.tr!('０-９', '0-9')
+      unless jpdate.match(/^(..)((\d+)|元)年(\d+)月(\d+)日$/)
+        raise "jp date parse error: #{jpdate}"
+      end
+
+      gengou = $1
+      m = $4.to_i
+      d = $5.to_i
+      y = $2.gsub('元', '1').to_i
+
+      case gengou
+      when '昭和'
+        y += 1925
+      when '平成'
+        y += 1988
+      when '令和'
+        y += 2018
+      else
+        raise 'gengou must heisei, reiwa'
+      end
+
+      Date.new(y, m, d)
+    end
+
   end
 
   class NonFraction < Value
