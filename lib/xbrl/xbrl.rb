@@ -170,7 +170,7 @@ module XBRL
       if fact
         fact.value
       else
-        nil
+        raise "no fact: #{args}"
       end
     end
   end
