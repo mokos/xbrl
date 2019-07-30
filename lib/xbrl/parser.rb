@@ -142,7 +142,7 @@ module XBRL
           doc.search(value_kind).each do |tag|
             context = contexts[tag['contextRef']]
             unless context
-              raise 'no context'
+              raise "no context: #{tag['contextRef']}"
             end
             name = tag['name'].split(':').last
             value = Value.make(tag, value_kind)
